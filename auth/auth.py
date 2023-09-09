@@ -27,24 +27,24 @@ def get_token_auth_header():
     auth = request.headers.get('Authorization', None)
     # if there is no header
     if not auth:
-        print('ERROR ==> Authorization header is expected')
+        print('Authorization header is expected')
         raise AuthError('Authorization header is expected.', 401)
 
     # to check for the bearer and the token seperatly
     parts = auth.split()
     if parts[0].lower() != 'bearer':
-        print('ERROR ==> Authorization header must start with "Bearer"')
+        print('Authorization header must start with "Bearer"')
         raise AuthError('Authorization header must start with "Bearer".', 401)
 
     # if the lenght of the splited header is not 2 and
     # it passed the previous check then it doesn't have a token
     elif len(parts) == 1:
-        print('ERROR ==> Token not found')
+        print('Token not found')
         raise AuthError('Token not found.', 401)
 
     # checks for the format of the header
     elif len(parts) > 2:
-        print('ERROR ==> Authorization header must be Bearer<Token>.')
+        print('Authorization header must be Bearer<Token>.')
         raise AuthError('Authorization header must be Bearer<Token>.', 401)
     # except:
     #     abort(401)
@@ -55,7 +55,7 @@ def get_token_auth_header():
 
 def check_permissions(permission, payload):
     if 'permissions' not in payload:
-        print('ERROR ==> Permissions not included in JWT')
+        print('Permissions not included in JWT')
         raise AuthError('Permissions not included in JWT.', 400)
 
     if permission not in payload['permissions']:

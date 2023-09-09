@@ -31,8 +31,8 @@ def create_app(db_uri="", test_config=None):
 
     # Uncomment these to reset the database
 
-    with app.app_context():
-        db_drop_and_create_all()
+    # with app.app_context():
+    #     db_drop_and_create_all()
 
     @app.route('/Itsworking')
     def healthy():

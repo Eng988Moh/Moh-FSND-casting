@@ -1,0 +1,58 @@
+-- Create the database
+CREATE DATABASE casting_agency;
+
+-- Connect to the database
+\c casting_agency
+
+-- Create the "actors" table
+CREATE TABLE actors (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    age INTEGER NOT NULL,
+    gender VARCHAR(10) NOT NULL
+);
+
+-- Insert mock data into the "actors" table
+INSERT INTO actors (name, age, gender)
+VALUES
+    ('Cate Blanchett', 52, 'Female'),
+    ('Ryan Gosling', 41, 'Male'),
+    ('Julia Roberts', 54, 'Female'),
+    ('Michael B. Jordan', 34, 'Male'),
+    ('Charlize Theron', 46, 'Female'),
+    ('Hugh Jackman', 53, 'Male'),
+    ('Anne Hathaway', 39, 'Female'),
+    ('Idris Elba', 49, 'Male'),
+    ('Kate Winslet', 46, 'Female'),
+    ('Joaquin Phoenix', 47, 'Male'),
+    ('Emma Stone', 33, 'Female'),
+    ('Matt Damon', 51, 'Male'),
+    ('Amy Adams', 47, 'Female'),
+    ('Chris Evans', 40, 'Male'),
+    ('Viola Davis', 56, 'Female');
+
+-- Create the "movies" table
+CREATE TABLE movies (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    release_date DATE NOT NULL
+);
+
+-- Insert mock data into the "movies" table
+INSERT INTO movies (title, release_date)
+VALUES
+    ('Carol', '2015-11-27'),
+    ('Pulp Fiction', '2023-07-21'),
+    ('runaway bride', '1999-07-30'),
+    ('creed 3', '2023-03-03'),
+    ('atomic blonde', '2017-07-26'),
+    ('logan', '2017-03-03'),
+    ('the devil wears prada', '2006-06-30'),
+    ('the suicide squad', '2021-07-21'),
+    ('avatar 2', '2022-12-16'),
+    ('joker', '2019-10-04'),
+    ('the amazing spider-man 2', '2014-05-01'),
+    ('oppenheimer', '2023-07-21'),
+    ('Man of Steel', '2013-07-14'),
+    ('avengers endgame', '2019-04-26'),
+    ('the woman king', '2022-09-16');
