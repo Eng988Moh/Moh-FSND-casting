@@ -19,9 +19,8 @@ class castingAgencyTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = "casting_agency_test"
-        self.database_path = "postgres://{}/{}".format(
-            'postgres:postgres@localhost:5432', self.database_name)
+        self.database_name = "casting_agency"
+        self.database_path = 'postgresql://postgres:0000@localhost:5432/self.database_name'
         self.db = db
 
         # binds the app to the current context
