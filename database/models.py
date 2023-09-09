@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 load_dotenv()
 
-database_path = os.environ.get('DATABASE_URL')
+database_path = 'postgresql://postgres:0000@localhost:5432/casting_agency'
 
 db = SQLAlchemy()
 
