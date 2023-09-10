@@ -1,7 +1,7 @@
 export FLASK_APP=app
 export FLASK_ENV=development
 export FLASK_DEBUG=1
-export DATABASE_URL=postgresql://postgres:0000@localhost:5432/casting_agency
+export DATABASE_URL=postgres://casting_agency_3m24_user:ziefKFz4tOIS9tLsG8seAsWCfqjCDxxO@dpg-cjtld8thtt0c73csfl20-a/casting_agency_3m24
 export AUTH0_DOMAIN=dev-yf1dyr4hofyd06rq.us.auth0.com
 export ALGORITHMS=['RS256']
 export API_AUDIENCE=casting
