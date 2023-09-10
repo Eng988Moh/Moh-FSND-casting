@@ -9,7 +9,7 @@ database_path = os.getenv('DATABASE_URL')
 if database_path.startswith("postgres://"):
     database_path = database_path.replace("postgres://", "postgresql://", 1)
 # 'postgresql://postgres:0000@localhost:5432/casting_agency'
-#
+
 
 db = SQLAlchemy()
 
@@ -18,7 +18,7 @@ def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
-    migrate = Migrate(app, db)
+    # migrate = Migrate(app, db)
     db.init_app(app)
     with app.app_context():
         db.create_all()
