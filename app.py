@@ -44,10 +44,15 @@ def create_app(db_uri="", test_config=None):
     @requires_auth('get:actors')
     def get_actors(jwt):
         actors = Actor.query.order_by(Actor.id).all()
-        current_page, current_actors = paginate(request, actors)
+        pagination_result = paginate(request, actors)
 
-        if len(current_actors) == 0:
+        pagination_result = paginate(request, actors)
+
+        if len(pagination_result) == 0:
             abort(404)
+
+        # Assigning the returned values to the correct variables
+        current_page, current_actors, *_ = pagination_result
 
         try:
             return jsonify({
@@ -63,7 +68,7 @@ def create_app(db_uri="", test_config=None):
     @requires_auth('get:movies')
     def get_movies(jwt):
         movies = Movie.query.order_by(Movie.id).all()
-        current_page, current_movies = paginate(request, movies)
+        current_page, current_movies, *_ = paginate(request, movies)
 
         if len(current_movies) == 0:
             abort(404)
@@ -184,7 +189,7 @@ def create_app(db_uri="", test_config=None):
             abort(422)
 
     @ app.route('/actors/<int:id>', methods=['DELETE'])
-    # @requires_auth('delete:actors')
+    @requires_auth('delete:actors')
     def delete_actor(jwt, id):
         actor = Actor.query.filter(Actor.id == id).one_or_none()
         if actor is None:
@@ -204,7 +209,7 @@ def create_app(db_uri="", test_config=None):
             abort(422)
 
     @ app.route('/movies/<int:id>', methods=['DELETE'])
-    # @requires_auth('delete:movies')
+    @requires_auth('delete:movies')
     def delete_movie(jwt, id):
         movie = Movie.query.filter(Movie.id == id).one_or_none()
         if movie is None:

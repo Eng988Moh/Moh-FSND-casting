@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 load_dotenv()
 
 database_path = 'postgresql://postgres:0000@localhost:5432/casting_agency'
+# os.getenv('DATABASE_URL')
 
 db = SQLAlchemy()
 
