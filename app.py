@@ -21,13 +21,14 @@ def paginate(request, selection):
     return current_page
 
 
-def create_app(db_uri="", test_config=None):
+def create_app(db_uri=None, test_config=None):
     app = Flask(__name__)
     CORS(app)
     if db_uri:
         setup_db(app, db_uri)
     else:
-        setup_db(app)
+        # Default to the Render database URI
+        setup_db(app, os.environ.get('DATABASE_URL'))
 
     # Uncomment these to reset the database
 
