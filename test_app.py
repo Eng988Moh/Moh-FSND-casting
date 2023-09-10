@@ -20,7 +20,7 @@ class castingAgencyTestCase(unittest.TestCase):
         self.client = self.app.test_client
         self.database_name = "casting_agency"
         # self.database_path = f'postgresql://postgres:0000@localhost:5432/{self.database_name}'
-        # self.database_path = 'postgresql://postgres:0000@127.0.0.1:5432/{self.database_name}'
+        self.database_path = 'postgresql://postgres:0000@127.0.0.1:5432/{self.database_name}'
         self.db = db
 
         # binds the app to the current context
@@ -287,6 +287,7 @@ class castingAgencyTestCase(unittest.TestCase):
 
     # RBAC rols tests
     # Asstant
+    # positive test
     def test_200_castingassistant_get_actors(self):
         res = self.client().get('/actors', headers=self.casting_assistant_token)
         data = json.loads(res.data)
@@ -295,6 +296,7 @@ class castingAgencyTestCase(unittest.TestCase):
         self.assertTrue(data['actors'])
         self.assertTrue(data['total_actors'])
         self.assertTrue(len(data['actors']))
+# negative test
 
     def test_403_castingassistant_role_post_actor(self):
         res = self.client().post('/actors', headers=self.casting_assistant_token)
@@ -303,6 +305,7 @@ class castingAgencyTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Permission not found.')
     # Director
+    # positive test
 
     def test_200_castingdirector_get_actors(self):
         res = self.client().get('/actors', headers=self.casting_director_token)
@@ -312,6 +315,7 @@ class castingAgencyTestCase(unittest.TestCase):
         self.assertTrue(data['actors'])
         self.assertTrue(data['total_actors'])
         self.assertTrue(len(data['actors']))
+    # negative test
 
     def test_403_castingdirector_delete_actor(self):
         res = self.client().delete('/actors/1', headers=self.casting_director_token)
@@ -321,7 +325,7 @@ class castingAgencyTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'Permission not found.')
 
     # Producer
-
+    # positive test
     def test_200_castingproducer_post_movies(self):
         res = self.client().post('/movies', headers=self.casting_producer_token)
         data = json.loads(res.data)
@@ -330,6 +334,7 @@ class castingAgencyTestCase(unittest.TestCase):
         self.assertTrue(data['movies'])
         self.assertTrue(data['total_movies'])
         self.assertTrue(len(data['movies']))
+    # negative test
 
     def test_401_castingproducer_delete_movie(self):
         res = self.client().delete('/movies/1')
