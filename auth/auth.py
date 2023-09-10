@@ -59,7 +59,7 @@ def check_permissions(permission, payload):
         raise AuthError('Permissions not included in JWT.', 400)
 
     if permission not in payload['permissions']:
-        print('ERROR ==> Permission not found')
+        print('Permission not found')
         raise AuthError('Permission not found.', 403)
 
     return True
@@ -73,7 +73,7 @@ def verify_decode_jwt(token):
 
     # if there is no key id then it is an invalid header
     if 'kid' not in unverified_header:
-        print('ERROR ==> Authorization malformed')
+        print(' Authorization malformed')
         raise AuthError('Authorization malformed.', 401)
 
     # does the compare to check that the key id matches the one provided
@@ -103,19 +103,19 @@ def verify_decode_jwt(token):
             return payload
 
         except jwt.ExpiredSignatureError:
-            print('ERROR ==> Token expired')
+            print(' Token expired')
             raise AuthError('Token expired.', 401)
 
         except jwt.JWTClaimsError:
-            print('ERROR ==> Incorrect claims. Please, check the audience and issuer')
+            print('Incorrect claims. Please, check the audience and issuer')
             raise AuthError(
                 'Incorrect claims. Please, check the audience and issuer.', 401)
 
         except Exception:
-            print('ERROR ==> Unable to parse authentication token')
+            print('Unable to parse authentication token')
             raise AuthError('Unable to parse authentication token.', 400)
 
-    print('ERROR ==> Unable to find the appropriate key')
+    print('Unable to find the appropriate key')
     raise AuthError('Unable to find the appropriate key.', 403)
 
 

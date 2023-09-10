@@ -13,14 +13,14 @@ load_dotenv()
 
 
 class castingAgencyTestCase(unittest.TestCase):
-    """This class represents the casting agency test case"""
 
     def setUp(self):
-        """Define test variables and initialize app."""
+        # create and configure the app
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "casting_agency"
-        self.database_path = 'postgresql://postgres:0000@localhost:5432/self.database_name'
+        # self.database_path = f'postgresql://postgres:0000@localhost:5432/{self.database_name}'
+        # self.database_path = 'postgresql://postgres:0000@127.0.0.1:5432/{self.database_name}'
         self.db = db
 
         # binds the app to the current context
@@ -48,6 +48,7 @@ class castingAgencyTestCase(unittest.TestCase):
 
 
 # Testing actors endpoints
+
 
     def test_get_paginated_actors(self):
         res = self.client().get('/actors', headers=self.casting_director_token)
