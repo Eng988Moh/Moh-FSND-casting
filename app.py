@@ -21,14 +21,14 @@ def paginate(request, selection):
     return current_page
 
 
-def create_app(db_uri=None, test_config=None):
+def create_app(db_uri="", test_config=None):
     app = Flask(__name__)
     CORS(app)
     if db_uri:
         setup_db(app, db_uri)
     else:
         # Default to the Render database URI
-        setup_db(app, os.environ.get('DATABASE_URL'))
+        setup_db(app)
 
     # Uncomment these to reset the database
 
@@ -114,6 +114,7 @@ def create_app(db_uri=None, test_config=None):
             return jsonify({
                 "success": True,
                 "added": True,
+                "actor_id": new_actor.id,
                 "total_actors": len(Actor.query.all())
             })
         except KeyError:
@@ -139,6 +140,7 @@ def create_app(db_uri=None, test_config=None):
             return jsonify({
                 "success": True,
                 "added": True,
+                "movie_id": new_movie.id,
                 "total_movies": len(Movie.query.all())
             })
         except KeyError:

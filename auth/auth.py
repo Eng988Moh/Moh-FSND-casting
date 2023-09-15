@@ -50,6 +50,10 @@ def get_token_auth_header():
     #     abort(401)
 
     token = parts[1]
+    print("Token:", token)
+    print("auth", auth)
+    print("parts", parts)
+
     return token
 
 
@@ -92,6 +96,8 @@ def verify_decode_jwt(token):
     # if rsa_key was not found it raises AuthError
     if rsa_key:
         try:
+            print('token', token)
+            print('rsa_key', rsa_key)
             payload = jwt.decode(
                 token,
                 rsa_key,
