@@ -30,7 +30,7 @@ def create_app(db_uri="", test_config=None):
         # Default to the Render database URI
         setup_db(app)
 
-    # Uncomment these to reset the database
+    # Uncomment these to on 1st run to create the database
 
     # with app.app_context():
     #     db_drop_and_create_all()

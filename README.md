@@ -44,15 +44,15 @@ source setup.sh to activate it
 
 
 ## Testing
-You MUST have a local database for tests,to create a one run the command ```createdb capstone_test```.
-In the root directory of the project run ```python test_app.py```
+You MUST have a local database for tests,to create a one run the command ### createdb casting_agency.
+In the root directory of the project run ###  python -m unittest test_app.py
 The test file will automatically fill the database and drop all the tables after it is done.
 
 ## API Documentation
 
 ### Getting Started
 
-Base URL: (hosted on Render) "https://casting-agency-0o2z.onrender.com" || (running locally) ```https://localhost:5000/```
+Base URL: (hosted on Render) "https://casting-agency-0o2z.onrender.com" || (running locally) https://localhost:5000/
 
 Authentication
 -
