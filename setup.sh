@@ -1,7 +1,7 @@
 export FLASK_APP=app
 export FLASK_ENV=development
 export FLASK_DEBUG=1
-export DATABASE_URL='postgresql://postgres:0000@localhost:5432/casting_agency'
+export DATABASE_URL=postgres://casting_agency_3m24_user:ziefKFz4tOIS9tLsG8seAsWCfqjCDxxO@dpg-cjtld8thtt0c73csfl20-a/casting_agency_3m24
 export AUTH0_DOMAIN=dev-yf1dyr4hofyd06rq.us.auth0.com
 export ALGORITHMS=['RS256']
 export API_AUDIENCE=casting
@@ -12,6 +12,4 @@ export CASTINGPRODUCER_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Il9TclF
 
 
 
-#https://dev-yf1dyr4hofyd06rq.us.auth0.com/authorize?audience=casting&response_type=token&client_id=ZId0QxHvYTHVOFF2kYyixAEIKZz1S1KU&redirect_uri=https://casting-agency-0o2z.onrender.com/Itsworking
-#   postgres://casting_agency_3m24_user:ziefKFz4tOIS9tLsG8seAsWCfqjCDxxO@dpg-cjtld8thtt0c73csfl20-a/casting_agency_3m24
-# 'postgresql://postgres:0000@localhost:5432/casting_agency'
+
