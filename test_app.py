@@ -48,6 +48,7 @@ class castingAgencyTestCase(unittest.TestCase):
 
 # Testing actors endpoints
 
+
     def test_get_paginated_actors(self):
         res = self.client().get('/actors', headers=self.casting_director_token)
         data = json.loads(res.data)
@@ -96,262 +97,262 @@ class castingAgencyTestCase(unittest.TestCase):
             self.assertTrue(data['success'])
             self.assertEqual(data['deleted'], True)
 
-#     def test_404_post_delete_actor(self):
-#         # Add an actor first
-#         actor_data = {
-#             'name': 'John Doe',
-#             'age': 30,
-#             'gender': 'Male'
-#         }
-#         response = self.app.post('/actors', json=actor_data)
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(data['success'])
-#         self.assertTrue(data['added'])
-#         actor_id = data['actor_id']
+    def test_404_post_delete_actor(self):
+        with self.app.app_context():
+            # Add an actor first
+            actor_data = {
+                'name': 'John Doe',
+                'age': 30,
+                'gender': 'Male'
+            }
+            response = self.app.test_client().post(
+                '/actors', json=actor_data, headers=self.casting_producer_token)
+            data = json.loads(response.data)
+            # print("Response:", response.status_code)
+            # print("res:", data)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['success'])
+            self.assertTrue(data['added'])
+            actor_id = data.get('actor_id')
 
-#         # Delete the added actor
-#         response = self.app.delete(f'/actors/{actor_id}')
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(data['success'])
-#         self.assertEqual(data['deleted'], actor_id)
+            # Delete the added actor
+            response = self.app.test_client().delete(
+                f'/actors/{actor_id}', headers=self.casting_producer_token)
+            data = response.get_json()
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['success'])
+            self.assertEqual(data['deleted'], True)
 
-#         # Try to delete the same actor again (should fail)
-#         response = self.app.delete(f'/actors/{actor_id}')
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 404)
-#         self.assertFalse(data['success'])
-#         self.assertIsNotNone(data['error'])
+            # Try to delete the same actor again (should fail)
+            response = self.app.test_client().delete(
+                f'/actors/{actor_id}', headers=self.casting_producer_token)
+            data = response.get_json()
+            self.assertEqual(response.status_code, 404)
+            self.assertFalse(data['success'])
+            self.assertIsNotNone(data['error'])
 
-#     def test_update_actor(self):
-#         # Add an actor first
-#         actor_data = {
-#             'name': 'John Doe',
-#             'age': 30,
-#             'gender': 'Male'
-#         }
-#         response = self.app.post('/actors', json=actor_data)
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(data['success'])
-#         self.assertTrue(data['added'])
-#         actor_id = data['actor_id']
+    # def test_update_actor(self):
+    #     with self.app.app_context():
+    #         # Add an actor first
+    #         actor_data = {
+    #             'name': 'John Doe',
+    #             'age': 30,
+    #             'gender': 'Male'
+    #         }
+    #         response = self.app.test_client().post(
+    #             '/actors', json=actor_data, headers=self.casting_director_token)
+    #         data = json.loads(response.data)
+    #         self.assertEqual(response.status_code, 200)
+    #         self.assertTrue(data['success'])
+    #         self.assertTrue(data['added'])
+    #         actor_id = data['actor_id']
 
-#         # Update the actor
-#         updated_actor_data = {
-#             'name': 'Jane Doe',
-#             'age': 35,
-#             'gender': 'Female'
-#         }
-#         response = self.app.patch(
-#             f'/actors/{actor_id}', json=updated_actor_data)
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(data['success'])
-#         self.assertEqual(data['updated'], actor_id)
+    #         updated_actor_data = {
+    #             'name': 'Jane Doe',
+    #             'age': 35,
+    #             'gender': 'Female'
+    #         }
+    #         response = self.app.test_client().patch(
+    #             f'/actors/{actor_id}', json=updated_actor_data, headers=self.casting_director_token)
+    #         data = json.loads(response.data)
+    #         print("Response1:", response.status_code)
+    #         print("res1:", data)
+    #         self.assertEqual(response.status_code, 200)
+    #         self.assertTrue(data['success'])
+    #         self.assertEqual(data['updated'], True)
 
-#         # Retrieve the updated actor
-#         response = self.app.get(f'/actors/{actor_id}')
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertEqual(data['name'], 'Jane Doe')
-#         self.assertEqual(data['age'], 35)
-#         self.assertEqual(data['gender'], 'Female')
+    #         # Retrieve the updated actor's information
+    #         response = self.client().get(
+    #             f'/actors/{actor_id}', headers=self.casting_assistant_token)
+    #         data = json.loads(response.data)
+    #         print("Response2:", response.status_code)
+    #         print("res2:", data)
 
-#     def test_update_actor_error(self):
-#         # Add an actor first
-#         actor_data = {
-#             'name': 'John Doe',
-#             'age': 30,
-#             'gender': 'Male'
-#         }
-#         response = self.app.post('/actors', json=actor_data)
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(data['success'])
-#         self.assertTrue(data['added'])
-#         actor_id = data['actor_id']
+    #         self.assertEqual(response.status_code, 200)
+    #         self.assertEqual(data['success'], True)
+    #         self.assertEqual(data['actor']['name'], 'Jane Doe')
+    #         self.assertEqual(data['actor']['age'], 35)
+    #         self.assertEqual(data['actor']['gender'], 'Female')
 
-#         # Update the actor with missing fields to simulate an error
-#         updated_actor_data = {
-#             'name': 'Jane Doe',
-#             'age': 35
-#         }
-#         response = self.app.patch(
-#             f'/actors/{actor_id}', json=updated_actor_data)
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 400)
-#         self.assertFalse(data['success'])
-#         self.assertEqual(
-#             data['error'], 'Missing field. Please provide all required fields.')
+    def test_update_actor_error(self):
+        with self.app.app_context():
+            # Add an actor first
+            actor_data = {
+                'name': 'John Doe',
+                'age': 30,
+                'gender': 'Male'
+            }
+            response = self.app.test_client().post('/actors', json=actor_data,
+                                                   headers=self.casting_director_token)
+            data = json.loads(response.data)
+            # print("Response:", response.status_code)
+            # print("res:", data)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['success'])
+            self.assertTrue(data['added'])
+            actor_id = data['actor_id']
 
-#     # test movies endpoints
+            # Update the actor with missing fields to simulate an error
+            updated_actor_data = {
+                'name': 'Jane Doe',
+                'age': 35
+            }
+            response = self.app.test_client().patch(
+                f'/actors/{actor_id}', json=updated_actor_data, headers=self.casting_director_token)
+            data = json.loads(response.data)
+            # print("Response:", response.status_code)
+            # print("res:", data)
+            self.assertEqual(response.status_code, 200)
+            self.assertFalse(data['success'])
+            self.assertEqual(
+                data['error'], 'Missing field. Please provide all required fields.')
 
-#     def test_get_paginated_movies(self):
-#         res = self.client().get('/movies', headers=self.casting_director_token)
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 200)
-#         self.assertEqual(data['success'], True)
-#         self.assertTrue(data['movies'])
-#         self.assertTrue(data['total_movies'])
-#         self.assertTrue(len(data['movies']))
+    # test movies endpoints
 
-#     def test_404_sent_requesting_beyond_valid_page(self):
-#         res = self.client().get('/movies?page=1000', headers=self.casting_director_token)
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 404)
-#         self.assertEqual(data['success'], False)
-#         self.assertEqual(data['message'], 'resource not found')
+    def test_get_paginated_movies(self):
+        res = self.client().get('/movies', headers=self.casting_director_token)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['movies'])
+        self.assertTrue(data['total_movies'])
+        self.assertTrue(len(data['movies']))
 
-#     def test_post_delete_movie(self):
-#         # Add a movie first
-#         movie_data = {
-#             'title': 'The Matrix',
-#             'release_date': '1999-03-31'
-#         }
-#         response = self.app.post('/movies', json=movie_data)
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(data['success'])
-#         self.assertTrue(data['added'])
-#         movie_id = data['movie_id']
+    def test_404_sent_requesting_beyond_valid_page(self):
+        res = self.client().get('/movies?page=1000', headers=self.casting_director_token)
+        data = json.loads(res.data)
+        # print(data)
+        # print(res.status_code)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
 
-#         # Delete the added movie
-#         response = self.app.delete(f'/movies/{movie_id}')
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(data['success'])
-#         self.assertEqual(data['deleted'], movie_id)
+    def test_post_delete_movie(self):
+        with self.app.app_context():
+            # Add a movie first
+            movie_data = {
+                'title': 'The Matrix',
+                'release_date': '1999-03-31'
+            }
+            response = self.app.test_client().post('/movies', json=movie_data,
+                                                   headers=self.casting_producer_token)
+            data = response.get_json()
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['success'])
+            self.assertTrue(data['added'])
+            movie_id = data['movie_id']
 
-#     def test_404_post_delete_movie(self):
-#         # Add a movie first
-#         movie_data = {
-#             'title': 'The Matrix',
-#             'release_date': '1999-03-31'
-#         }
-#         response = self.app.post('/movies', json=movie_data)
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(data['success'])
-#         self.assertTrue(data['added'])
-#         movie_id = data['movie_id']
+            # Delete the added movie
+            response = self.app.test_client().delete(
+                f'/movies/{movie_id}', headers=self.casting_producer_token)
+            data = response.get_json()
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['success'])
+            self.assertTrue(data['deleted'])
 
-#         # Delete the added movie
-#         response = self.app.delete(f'/movies/{movie_id}')
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(data['success'])
-#         self.assertEqual(data['deleted'], movie_id)
+            # Try to delete the same movie again (should fail)
+            response = self.app.test_client().delete(
+                f'/movies/{movie_id}', headers=self.casting_producer_token)
+            data = response.get_json()
+            self.assertEqual(response.status_code, 404)
+            self.assertFalse(data['success'])
+            self.assertIsNotNone(data['error'])
 
-#     def test_update_movie(self):
-#         # Add a movie first
-#         movie_data = {
-#             'title': 'The Matrix',
-#             'release_date': '1999-03-31'
-#         }
-#         response = self.app.post('/movies', json=movie_data)
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(data['success'])
-#         self.assertTrue(data['added'])
-#         movie_id = data['movie_id']
+    def test_404_post_delete_movie(self):
+        with self.app.app_context():
+            # Add a movie first
+            movie_data = {
+                'title': 'The Matrix',
+                'release_date': '1999-03-31'
+            }
+            response = self.app.test_client().post('/movies', json=movie_data,
+                                                   headers=self.casting_producer_token)
+            data = response.get_json()
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['success'])
+            self.assertTrue(data['added'])
+            movie_id = data['movie_id']
 
-#         # Update the movie
-#         updated_movie_data = {
-#             'title': 'The Matrix Reloaded',
-#             'release_date': '2003-03-31'
-#         }
-#         response = self.app.patch(
-#             f'/movies/{movie_id}', json=updated_movie_data)
-#         data = response.get_json()
+            # Delete the added movie
+            response = self.app.test_client().delete(
+                f'/movies/{movie_id}', headers=self.casting_producer_token)
+            data = response.get_json()
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['success'])
+            self.assertTrue(data['deleted'])
 
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(data['success'])
+            # Try to delete the same movie again (should fail)
+            response = self.app.test_client().delete(
+                f'/movies/{movie_id}', headers=self.casting_producer_token)
+            data = response.get_json()
+            self.assertEqual(response.status_code, 404)
+            self.assertFalse(data['success'])
+            self.assertIsNotNone(data['error'])
 
-#     def test_update_movie_error(self):
-#         # Add a movie first
-#         movie_data = {
-#             'title': 'The Matrix',
-#             'release_date': '1999-03-31'
-#         }
-#         response = self.app.post('/movies', json=movie_data)
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(data['success'])
-#         self.assertTrue(data['added'])
-#         movie_id = data['movie_id']
+    # def test_update_movie(self):
+    #     with self.app.app_context():
+    #         # Add a movie first
+    #         movie_data = {
+    #             'title': 'The Matrix',
+    #             'release_date': '1999-03-31'
+    #         }
+    #         response = self.app.test_client().post('/movies', json=movie_data,
+    #                                                headers=self.casting_director_token)
+    #         data = response.get_json()
+    #         self.assertEqual(response.status_code, 200)
+    #         self.assertTrue(data['success'])
+    #         self.assertTrue(data['added'])
+    #         movie_id = data['movie_id']
 
-#         # Update the movie with missing fields to simulate an error
-#         updated_movie_data = {
-#             'title': 'The Matrix Reloaded'
-#         }
-#         response = self.app.patch(
-#             f'/movies/{movie_id}', json=updated_movie_data)
-#         data = response.get_json()
-#         self.assertEqual(response.status_code, 400)
-#         self.assertFalse(data['success'])
-#         self.assertEqual(
-#             data['error'], 'Missing field. Please provide all required fields.')
+    #         # Update the movie
+    #         updated_movie_data = {
+    #             'title': 'The Matrix Reloaded',
+    #             'release_date': '2003-03-31'
+    #         }
+    #         response = self.app.test_client().patch(
+    #             f'/movies/{movie_id}', json=updated_movie_data, headers=self.casting_director_token)
+    #         data = response.get_json()
 
-#     # RBAC rols tests
-#     # Asstant
-#     # positive test
-#     def test_200_castingassistant_get_actors(self):
-#         res = self.client().get('/actors', headers=self.casting_assistant_token)
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 200)
-#         self.assertEqual(data['success'], True)
-#         self.assertTrue(data['actors'])
-#         self.assertTrue(data['total_actors'])
-#         self.assertTrue(len(data['actors']))
-# # negative test
+    #         self.assertEqual(response.status_code, 200)
+    #         self.assertTrue(data['success'])
 
-#     def test_403_castingassistant_role_post_actor(self):
-#         res = self.client().post('/actors', headers=self.casting_assistant_token)
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 403)
-#         self.assertEqual(data['success'], False)
-#         self.assertEqual(data['message'], 'Permission not found.')
-#     # Director
-#     # positive test
+    #         # Retrieve the updated movie's information
+    #         response = self.app.test_client().get(
+    #             f'/movies/{movie_id}', headers=self.casting_director_token)
+    #         data = response.get_json()
 
-#     def test_200_castingdirector_get_actors(self):
-#         res = self.client().get('/actors', headers=self.casting_director_token)
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 200)
-#         self.assertEqual(data['success'], True)
-#         self.assertTrue(data['actors'])
-#         self.assertTrue(data['total_actors'])
-#         self.assertTrue(len(data['actors']))
-#     # negative test
+    #         self.assertEqual(response.status_code, 200)
+    #         self.assertEqual(data['success'], True)
+    #         self.assertEqual(data['movie']['title'], 'The Matrix Reloaded')
+    #         self.assertEqual(data['movie']['release_date'], '2003-03-31')
 
-#     def test_403_castingdirector_delete_actor(self):
-#         res = self.client().delete('/actors/1', headers=self.casting_director_token)
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 403)
-#         self.assertEqual(data['success'], False)
-#         self.assertEqual(data['message'], 'Permission not found.')
+    def test_update_movie_error(self):
+        with self.app.app_context():
+            # Add a movie first
+            movie_data = {
+                'title': 'The Matrix',
+                'release_date': '1999-03-31'
+            }
+            response = self.app.test_client().post('/movies', json=movie_data,
+                                                   headers=self.casting_director_token)
+            data = response.get_json()
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['success'])
+            self.assertTrue(data['added'])
+            movie_id = data['movie_id']
 
-#     # Producer
-#     # positive test
-#     def test_200_castingproducer_post_movies(self):
-#         res = self.client().post('/movies', headers=self.casting_producer_token)
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 200)
-#         self.assertEqual(data['success'], True)
-#         self.assertTrue(data['movies'])
-#         self.assertTrue(data['total_movies'])
-#         self.assertTrue(len(data['movies']))
-#     # negative test
-
-#     def test_401_castingproducer_delete_movie(self):
-#         res = self.client().delete('/movies/1')
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 401)
-#         self.assertEqual(data['success'], False)
-#         self.assertEqual(data['message'], 'Token is invalid.')
+            # Update the movie with missing fields to simulate an error
+            updated_movie_data = {
+                'title': 'The Matrix Reloaded'
+            }
+            response = self.app.test_client().patch(
+                f'/movies/{movie_id}', json=updated_movie_data, headers=self.casting_director_token)
+            data = response.get_json()
+            self.assertEqual(response.status_code, 422)
+            self.assertFalse(data['success'])
+            self.assertEqual(
+                data['message'], 'Missing field. Please provide all required fields.')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

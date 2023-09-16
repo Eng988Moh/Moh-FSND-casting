@@ -3,7 +3,7 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from auth.auth import AuthError, requires_auth
-from database.models import Actor, Movie, db_drop_and_create_all, setup_db
+from database.models import Actor, Movie, db_drop_and_create_all, setup_db, db
 
 ITEMS_PER_PAGE = 8
 
@@ -55,8 +55,6 @@ def create_app(db_uri="", test_config=None):
         actors = Actor.query.order_by(Actor.id).all()
         pagination_result = paginate(request, actors)
 
-        pagination_result = paginate(request, actors)
-
         if len(pagination_result) == 0:
             abort(404)
 
@@ -77,10 +75,12 @@ def create_app(db_uri="", test_config=None):
     @requires_auth('get:movies')
     def get_movies(jwt):
         movies = Movie.query.order_by(Movie.id).all()
-        current_page, current_movies, *_ = paginate(request, movies)
+        pagination_result = paginate(request, movies)
 
-        if len(current_movies) == 0:
+        if len(pagination_result) == 0:
             abort(404)
+
+        current_page, current_movies, *_ = pagination_result
 
         try:
             return jsonify({
@@ -146,14 +146,33 @@ def create_app(db_uri="", test_config=None):
         except KeyError:
             abort(422)
 
-    @app.route('/actors/<int:id>', methods=['PATCH'])
+    @app.route('/actors/<int:id>', methods=['PATCH', 'GET'])
     @requires_auth('patch:actors')
     def update_actor(jwt, id):
-        body = request.get_json()
         try:
-            name = body['name']
-            age = body['age']
-            gender = body['gender']
+            if request.method != 'PATCH':
+                return jsonify({
+                    "success": False,
+                    "error": "Method not allowed"
+                }), 405
+
+            actor = Actor.query.filter_by(id=id).first()
+            if actor is None:
+                return jsonify({
+                    "success": False,
+                    "error": "Actor not found"
+                })
+
+            body = request.get_json()
+            if not body:
+                return jsonify({
+                    "success": False,
+                    "error": "Invalid request body"
+                })
+
+            name = body.get('name')
+            age = body.get('age')
+            gender = body.get('gender')
 
             if name is None or age is None or gender is None:
                 return jsonify({
@@ -161,16 +180,19 @@ def create_app(db_uri="", test_config=None):
                     "error": "Missing field. Please provide all required fields."
                 })
 
-            actor = Actor.query.filter(Actor.id == id).one_or_none()
-            if actor is None:
-                return jsonify({
-                    "success": False,
-                    "error": "Actor not found"
-                })
+            actor.name = name
+            actor.age = age
+            actor.gender = gender
+            db.session.commit()
 
-            actor.update(name, age, gender)
+            return jsonify({
+                "success": True,
+                "updated": True,
+                "actor": actor.format()
+            })
 
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     @app.route('/movies/<int:id>', methods=['PATCH'])
@@ -242,12 +264,13 @@ def create_app(db_uri="", test_config=None):
 
 # Error Handling
 
+
     @app.errorhandler(422)
     def unprocessable(error):
         return jsonify({
             "success": False,
             "error": 422,
-            "message": "unprocessable"
+            "message": "Missing field. Please provide all required fields."
         }), 422
 
     @app.errorhandler(404)
